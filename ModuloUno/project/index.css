@@ -1,0 +1,147 @@
+body {
+    margin: 5;
+    font-family: "Poppins";
+    background: #3D77FF;
+}
+
+h1 {
+    font-size: 2em;
+    color: black;
+}
+
+h3 {
+  font-size: 0.9em;
+  color: black;
+}
+
+canvas {
+    border: 1px solid black;
+}
+
+table {
+  border: 0px;
+}
+
+#instructions {
+    font-size: 1.2em;
+}
+
+#button_div {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+#fps_counter {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #e09336;
+}
+
+#button_table {
+  height: 70%;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 140px;
+  height: 15px;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%; 
+  background: #e09336;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e09336;
+  cursor: pointer;
+}
+
+.btn {
+  font-size:20px;
+  width:120px;
+  height:34px;
+  border-width:2px;
+  color:#fff;
+  border-color:#03142b;
+  font-weight:bold;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  border-bottom-left-radius:20px;
+  border-bottom-right-radius:20px;
+  background:#3641e0;
+  cursor:pointer;
+}
+.btn_2 {
+  font-size:13px;
+  width:160px;
+  height:34px;
+  border-width:2px;
+  color:#fff;
+  border-color:#ab712a;
+  font-weight:bold;
+  border-top-left-radius:20px;
+  border-top-right-radius:20px;
+  border-bottom-left-radius:20px;
+  border-bottom-right-radius:20px;
+  background:#e09336;
+  cursor:pointer;
+}
+
+.btn_black {
+  width:30px;
+  height:30px;
+  border-radius:20px;
+  border-width:0px;
+  background:#000000;
+  cursor:pointer;
+}
+
+.btn_red {
+  width:30px;
+  height:30px;
+  border-radius:20px;
+  border-width:0px;
+  background:#ff0000;
+  cursor:pointer;
+}
+
+.btn_orange {
+  width:30px;
+  height:30px;
+  border-radius:20px;
+  border-width:0px;
+  background: #ffa500;
+  cursor:pointer;
+}
+
+.btn_blue {
+  width:30px;
+  height:30px;
+  border-radius:20px;
+  border-width:0px;
+  background:#0000ff;
+  cursor:pointer;
+}
+
+.btn:hover {
+  background: #71bae4
+}
+       
+
+  

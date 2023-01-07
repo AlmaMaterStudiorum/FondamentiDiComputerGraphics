@@ -1,0 +1,530 @@
+function drawUpper(programInfo, x, mov) {
+        // BODY
+        // calls gl.bindBuffer, gl.enableVertexAttribArray, gl.vertexAttribPointer
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_body);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x + mov + 3, 0);
+        // calls gl.uniform
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.body,
+        });
+        // calls gl.drawArrays or gl.drawElements
+        webglUtils.drawBufferInfo(gl, bufferInfo_body);
+
+        // SIDE MESH
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_lateral_mesh);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.upper_mesh,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_lateral_mesh);
+
+        // LACES
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_laces);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x * 3 + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_world: mo_matrix1,
+            u_texture: texture_settings.laces,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_laces);
+
+        // TOUNG
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_toung);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_world: mo_matrix1,
+            u_texture: texture_settings.toung,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_toung);
+
+        // TOE
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_toe_mesh);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x * 2 + mov + 3, x * 2);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.upper_mesh,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_toe_mesh);
+
+        // SIDE
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_side_mesh);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x * 2 + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.upper_mesh,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_side_mesh);
+    }
+    
+    function drawSole(programInfo, x, mov) {
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_sole);
+        
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, mov -x + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.sole,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_sole);
+    }
+
+    function drawBack(programInfo, x, mov) {
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_back);
+        
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, 0, x + mov + 3, -x * 3);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.back,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_back);
+    }    
+
+    function drawShoe(programInfo, x, mov) {
+        drawSole(programInfo, x, mov);
+        drawUpper(programInfo, x, mov);
+        drawLogos(programInfo, x, mov);
+        drawBack(programInfo, x, mov);
+    }
+
+        // UPPER
+    loadDoc(PATH_BODY);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_LACES);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_TOUNG);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_LATERAL_MESH);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_TOE_MESH);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_SIDE_MESH);
+    geometries.push(parseOBJ(result));
+
+    // SOLE
+    loadDoc(PATH_SOLE);
+    geometries.push(parseOBJ(result));
+
+    // LOGOS
+    loadDoc(PATH_LEFT_LOGO);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_RIGHT_LOGO);
+    geometries.push(parseOBJ(result));
+
+
+        const bufferInfo_body = webglUtils.createBufferInfoFromArrays(gl, geometries[BODY]);
+    const bufferInfo_laces = webglUtils.createBufferInfoFromArrays(gl, geometries[LACES]);
+    const bufferInfo_toung = webglUtils.createBufferInfoFromArrays(gl, geometries[TOUNG]);
+    const bufferInfo_lateral_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[LATERAL_MESH]);
+    const bufferInfo_toe_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[TOE_MESH]);
+    const bufferInfo_side_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[SIDE_MESH]);
+
+    const bufferInfo_sole = webglUtils.createBufferInfoFromArrays(gl, geometries[SOLE]);
+
+        const bufferInfo_back = webglUtils.createBufferInfoFromArrays(gl, geometries[BACK]);
+
+
+            function drawLogos(programInfo, x, mov) {
+        // RIGHT LOGO 
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_left_logo);
+    
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, -x, x + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.logos,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_left_logo);
+
+        // LEFT LOGO
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_right_logo);
+    
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translate(mo_matrix1, +x, x + mov + 3, 0);
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_world: mo_matrix1,
+            u_texture: texture_settings.logos,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_right_logo);
+    }
+
+
+        const bufferInfo_body = webglUtils.createBufferInfoFromArrays(gl, geometries[BODY]);
+    const bufferInfo_laces = webglUtils.createBufferInfoFromArrays(gl, geometries[LACES]);
+    const bufferInfo_toung = webglUtils.createBufferInfoFromArrays(gl, geometries[TOUNG]);
+    const bufferInfo_lateral_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[LATERAL_MESH]);
+    const bufferInfo_toe_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[TOE_MESH]);
+    const bufferInfo_side_mesh = webglUtils.createBufferInfoFromArrays(gl, geometries[SIDE_MESH]);
+
+    const bufferInfo_sole = webglUtils.createBufferInfoFromArrays(gl, geometries[SOLE]);
+
+    const bufferInfo_left_logo = webglUtils.createBufferInfoFromArrays(gl, geometries[LEFT_LOGO]);
+    const bufferInfo_right_logo = webglUtils.createBufferInfoFromArrays(gl, geometries[RIGHT_LOGO]);
+
+    const bufferInfo_back = webglUtils.createBufferInfoFromArrays(gl, geometries[BACK]);
+
+
+        // UPPER
+    
+    loadDoc(PATH_BODY);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_LACES);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_TOUNG);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_LATERAL_MESH);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_TOE_MESH);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_SIDE_MESH);
+    geometries.push(parseOBJ(result));
+
+    // SOLE
+    loadDoc(PATH_SOLE);
+    geometries.push(parseOBJ(result));
+
+    // LOGOS
+    loadDoc(PATH_LEFT_LOGO);
+    geometries.push(parseOBJ(result));
+    loadDoc(PATH_RIGHT_LOGO);
+    geometries.push(parseOBJ(result));
+
+    // BACK
+    loadDoc(PATH_BACK);
+    geometries.push(parseOBJ(result));
+
+    <td>
+                    <div id="button_div">
+                        <table id="button_table" cellpadding="5%">
+                            <tr><td>
+                                <center>
+                                    <p>Change Body Color</p>
+                                    <button class="btn_black" id="body_black"></button>
+                                    <button class="btn_red" id="body_red"></button>
+                                    <button class="btn_orange" id="body_orange"></button>
+                                    <button class="btn_blue" id="body_blue"></button>
+                                    <div>
+                                        <input type="file"  accept="image/jpeg, image/png" name="image" id="file_body"  onchange="loadBody(event)" style="display: none;">
+                                        <h3><label for="file_body" style="cursor: pointer;">Upload Image</label></h3>
+                                        <img id="output_body" width="30%" height="30%" />	<br>
+                                        <script>
+                                            var image_body; // used to change the textures in the index when APPLY IMAGE is clicked
+                                            // get the img uploaded in the img field 
+                                            var loadBody = function(event) {
+                                                document.getElementById('output_body').style.display = 'block';
+                                                image_body = document.getElementById('output_body');
+                                                image_body.src = URL.createObjectURL(event.target.files[0]);
+                                            };
+                                        </script>
+                                        <button class="btn_2" id="change_body"  type="button">APPLY IMAGE</button>
+                                    </div>
+                                </center>
+                            </td></tr>
+                            <tr><td>
+                                <center>
+                                    <p>Change Logo Color</p>
+                                    <button class="btn_black" id="logo_black"></button>
+                                    <button class="btn_red" id="logo_red"></button>
+                                    <button class="btn_orange" id="logo_orange"></button>
+                                    <button class="btn_blue" id="logo_blue"></button>
+                                    <div>
+                                        <input type="file"  accept="image/jpeg, image/png" name="image" id="file_logo"  onchange="loadLogo(event)" style="display: none;">
+                                        <h3><label for="file_logo" style="cursor: pointer;">Upload Image</label></h3>
+                                        <img id="output_logo" width="30%" height="30%" />	<br>
+                                        <script>
+                                            var image_logo;
+                                            var loadLogo = function(event) {
+                                                document.getElementById('output_logo').style.display= 'block';
+                                                image_logo = document.getElementById('output_logo');
+                                                image_logo.src = URL.createObjectURL(event.target.files[0]);
+                                            };
+                                        </script>
+                                        <button class="btn_2" id="change_logo"  type="button">APPLY IMAGE</button>
+                                    </div>
+                                </center>
+                            </td></tr>
+                            <tr><td>
+                                <center>
+                                    <p>Change Back Color</p>
+                                    <button class="btn_black" id="back_black"></button>
+                                    <button class="btn_red" id="back_red"></button>
+                                    <button class="btn_orange" id="back_orange"></button>
+                                    <button class="btn_blue" id="back_blue"></button>
+                                    <div>
+                                        <input type="file"  accept="image/jpeg, image/png" name="image" id="file_back"  onchange="loadBack(event)" style="display: none;">
+                                        <h3><label for="file_back" style="cursor: pointer;">Upload Image</label></h3>
+                                        <img id="output_back" width="30%" height="30%" />	<br>
+                                        <script>
+                                            var image_back;
+                                            var loadBack = function(event) {
+                                                document.getElementById('output_back').style.display= 'block';
+                                                image_back = document.getElementById('output_back');
+                                                image_back.src = URL.createObjectURL(event.target.files[0]);
+                                            };
+                                        </script>
+                                        <button class="btn_2" id="change_back"  type="button">APPLY IMAGE</button>
+                                    </div>
+                                </center>
+                            </td></tr>
+                        </table>
+                       
+                    </div>
+/*================= Change textures handler ======================*/
+    {
+        const button_body_black = document.getElementById("body_black");
+        button_body_black.onclick = function() {
+            texture_settings.upper_mesh = textures[BLACK_LEATHER];
+            document.getElementById('output_body').style.display = 'none';
+        }
+        const button_body_red = document.getElementById("body_red");
+        button_body_red.onclick = function() {
+            texture_settings.upper_mesh = textures[RED_LEATHER];
+            document.getElementById('output_body').style.display = 'none';
+        }
+        const button_body_orange = document.getElementById("body_orange");
+        button_body_orange.onclick = function() {
+            texture_settings.upper_mesh = textures[ORANGE_LEATHER];
+            document.getElementById('output_body').style.display = 'none';
+        }
+        const button_body_blue = document.getElementById("body_blue");
+        button_body_blue.onclick = function() {
+            texture_settings.upper_mesh = textures[BLUE_LEATHER];
+            document.getElementById('output_body').style.display = 'none';
+        }
+        const button_body_image = document.getElementById("change_body");
+        button_body_image.onclick = function() {
+            texture_settings.upper_mesh = textureFromImage(gl, image_body.src);
+            document.getElementById('output_body').style.display = 'none';
+        }
+                             
+
+        const button_logo_black = document.getElementById("logo_black");
+        button_logo_black.onclick = function() {
+            texture_settings.logos = textures[BLACK_LEATHER];
+            document.getElementById('output_logo').style.display = 'none';
+        }
+        const button_logo_red = document.getElementById("logo_red");
+        button_logo_red.onclick = function() {
+            texture_settings.logos = textures[RED_LEATHER];
+            document.getElementById('output_logo').style.display = 'none';
+        }
+        const button_logo_orange = document.getElementById("logo_orange");
+        button_logo_orange.onclick = function() {
+            texture_settings.logos = textures[ORANGE_LEATHER];
+            document.getElementById('output_logo').style.display = 'none';
+        }
+        const button_logo_blue = document.getElementById("logo_blue");
+        button_logo_blue.onclick = function() {
+            texture_settings.logos = textures[BLUE_LEATHER];
+            document.getElementById('output_logo').style.display = 'none';
+        }
+        const button_logo_image = document.getElementById("change_logo");
+        button_logo_image.onclick = function() {
+            texture_settings.logos = textureFromImage(gl, image_logo.src);
+        }
+
+        const button_back_black = document.getElementById("back_black");
+        button_back_black.onclick = function() {
+            texture_settings.back = textures[BLACK_LEATHER];
+            document.getElementById('output_back').style.display = 'none';
+        }
+        const button_back_red = document.getElementById("back_red");
+        button_back_red.onclick = function() {
+            texture_settings.back = textures[RED_LEATHER];
+            document.getElementById('output_back').style.display = 'none';
+        }
+        const button_back_orange = document.getElementById("back_orange");
+        button_back_orange.onclick = function() {
+            texture_settings.back = textures[ORANGE_LEATHER];
+            document.getElementById('output_back').style.display = 'none';
+        }
+        const button_back_blue = document.getElementById("back_blue");
+        button_back_blue.onclick = function() {
+            texture_settings.back = textures[BLUE_LEATHER];
+            document.getElementById('output_back').style.display = 'none';
+        }
+        const button_back_image = document.getElementById("change_back");
+        button_back_image.onclick = function() {
+            texture_settings.back = textureFromImage(gl, image_back.src);
+        }
+    }
+
+    if (toggle_movement_on_off) {
+            if (movement >= settings.dMax || movement <= settings.dMin) {
+                settings.dx = -settings.dx;
+            };
+            movement += settings.dx;
+        };
+
+        if (toggle_explotion_on_off) {
+            if (!exploded) {
+                // from eMin to eMax
+                if (transl <= settings.eMax) {
+                    transl += settings.de;
+                    slider.value = transl * 100;
+                } else {
+                    exploded = true;
+                    console.log("Shoes completly exploded");
+                    toggle_explotion_on_off = false;
+                }
+            } else {
+                // from eMax to eMin
+                if (transl >= settings.eMin) {
+                    transl -= settings.de;
+                    slider.value = transl * 100;
+                } else {
+                    exploded = false;
+                    console.log("Shoes completly built");
+                    toggle_explotion_on_off = false;
+                }
+            }
+        };
+
+
+        toggle_movement_on_off = false, toggle_explotion_on_off = false,
+
+
+        // Variables introduced for menaging mechanics status
+var transl = 0.0; // explotion
+var movement = 0.0; // movement on Y axis
+
+slider.oninput = function() {
+    // For every slider value changes we update the translation (explotion distance)
+    transl = slider.value / 100.0; // slider has integer value to get a smoother user usage
+};
+
+button_movement.onclick = function() {
+    toggle_movement_on_off = !toggle_movement_on_off;
+}
+
+button_shadows.onclick = function() {
+    toggle_shadow_on_off = !toggle_shadow_on_off;
+}
+
+button_shadows.onclick = function() {
+    toggle_shadow_on_off = !toggle_shadow_on_off;
+}
+
+        case "e": // e -> explode
+            toggle_explotion_on_off = !toggle_explotion_on_off;
+            break;
+        case "m": // m -> movement
+            toggle_movement_on_off = !toggle_movement_on_off;
+            break;
+
+                    case "s": // s -> shadow
+            toggle_shadow_on_off = !toggle_shadow_on_off;
+            break;
+
+            button_shadows.onclick = function() {
+    toggle_shadow_on_off = !toggle_shadow_on_off;
+}
+
+
+var slider = document.getElementById("slide-explode");
+//const button_movement = document.getElementById("movement");
+
+//const button_shadows = document.getElementById("shadows");
+
+function CreateUnusedTexture()
+    {
+        // create a color texture of the same size as the depth texture
+        const unusedTexture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, unusedTexture);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            depthTextureSize,
+            depthTextureSize,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            null,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        // attach it to the framebuffer
+        gl.framebufferTexture2D(
+            gl.FRAMEBUFFER,        // target
+            gl.COLOR_ATTACHMENT0,  // attachment point
+            gl.TEXTURE_2D,         // texture target
+            unusedTexture,         // texture
+            0);                    // mip level
+    }
+
+    function CreateUnusedTexture()
+    {
+        // create a color texture of the same size as the depth texture
+        const unusedTexture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, unusedTexture);
+        gl.texImage2D(
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            depthTextureSize,
+            depthTextureSize,
+            0,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            null,
+        );
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+        // attach it to the framebuffer
+        gl.framebufferTexture2D(
+            gl.FRAMEBUFFER,        // target
+            gl.COLOR_ATTACHMENT0,  // attachment point
+            gl.TEXTURE_2D,         // texture target
+            unusedTexture,         // texture
+            0);                    // mip level
+    }
+
+    function drawBox(programInfo) {
+        // BACK
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_plane);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translation(0, 13.5, -BOUNDARIES);
+        mo_matrix1 = m4.xRotate(mo_matrix1, degToRad(90));
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_color: [1, 0, 0, 1],
+            u_texture: textures[T_ME],
+            u_world: mo_matrix1,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_plane);
+        // LEFT
+        webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_plane);
+        mo_matrix1 = m4.copy(mo_matrix);
+        mo_matrix1 = m4.translation(-BOUNDARIES, 13.5, 0);
+        mo_matrix1 = m4.zRotate(mo_matrix1, degToRad(-90));
+        webglUtils.setUniforms(programInfo, {
+            u_colorMult: [0.9, 0.8, 1, 1],
+            u_color: [1, 0, 0, 1],
+            u_texture: textures[T_PLANE],
+            u_world: mo_matrix1,
+        });
+        webglUtils.drawBufferInfo(gl, bufferInfo_plane);
+    }
+

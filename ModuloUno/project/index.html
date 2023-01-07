@@ -1,0 +1,243 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+        <meta HTTP-EQUIV=”Pragma” CONTENT=”no-cache”>
+        <meta HTTP-EQUIV=”Cache-Control” CONTENT=”no-cache”>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <title>Hit The Cube</title>
+        <meta charset="UTF-8">
+        <meta name="description" content="3D Game with spheres and cubes ">
+        <meta name="author" content="Ugo Marchesini">
+
+        <link rel="stylesheet" href="index.css">
+        <script src="const.js"></script> <!--used to define all CONST used in the application e.g texture PATH-->
+        <script type="text/javascript" src="resources/webgl-utils.js"></script> <!--used to render on canvas-->
+        <script type="text/javascript" src="resources/m4.js"></script> <!--used for matrix calculation-->
+        <script type="text/javascript" src="resources/dat.gui.js"></script> <!--easy API to create a control panel for the application-->
+        <script type="text/javascript" src="global.js" ></script>
+        <script type="text/javascript" src="gui.event.js" ></script>
+        <script type="text/javascript" src="gameconfiguration.js" ></script>
+        <script type="text/javascript" src="resources/sphere.utils.js"></script> <!--easy API to create a control panel for the application-->
+        <script type="text/javascript" src="event_handlers.js"></script> <!--easy API to create a control panel for the application-->
+       
+        <script src="utils.js" ></script>
+    </head>
+    <body onload = "HitTheCubeGame()">
+        <div id = "fps_counter">
+        </div>
+        <center><h1>Hit The Cube</h1></center>
+        <div class="container" id="canvas-container">
+            <table style="width:  100%;" cellpadding="5%">
+                <tr>
+                    <td><canvas id="shoes-canvas">Your browser does not support HTML 5!</canvas></td>
+                    
+            </table>
+        </div>
+        <div>
+            <table style="width:  70%;" cellpadding="5%">
+                <tr>
+                    <td><center><button class="btn" id="id_init"  type="button">Init game</button></center></td>
+                    <td><center><button class="btn" id="id_1_cube"  type="button">1</button></center></td>
+                    <td><center><button class="btn" id="id_2_cube"  type="button">2</button></center></td>
+                    <td><center><button class="btn" id="id_3_cube"  type="button">3</button></center></td>
+                    <td><center><button class="btn" id="id_special_cube"  type="button">Special</button></center></td>
+                    <td><center><button class="btn" id="id_powerleft"  type="button"><=</button></center></td>
+                    <td><center><button class="btn" id="id_powerright"  type="button">=></button></center></td>
+                    <td><center><button class="btn" id="id_startsphere"  type="button">Start</button></center></td>
+                    <td><center><button class="btn" id="frustum"  type="button">FRUSTUM</button></center></td>
+                    <td><center><button class="btn" id="shadows" hidden type="button">SHADOWS</button></center></td>
+                    <td><center><button class="btn" id="id_countdown"  type="button">Stop</button></center></td>
+
+                    <td hidden id="xposition"></td>
+                    <td hidden id="zposition"></td>
+                </tr>
+                <tr>
+                    <td hidden id="arrowangle"></td>
+                    <td hidden id="xdirection"></td>
+                    <td hidden id="zdirection"></td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="container" id="instructions">
+            <canvas id="text-canvas" height="40px" style="border: 0px;"></canvas>
+            <script>
+                var text_canvas = document.getElementById("text-canvas");
+                var text_ctx = text_canvas.getContext("2d");
+                text_ctx.font = "20px Verdana";
+                text_ctx.fillStyle = "black";
+                text_ctx.textAlign = "center";
+                text_ctx.fillText("Instructions: ", text_canvas.width/2, 30);
+
+                document.getElementById("id_init").addEventListener("click", initgame);
+                document.getElementById("id_1_cube").addEventListener("click", startplay1cube);
+                document.getElementById("id_2_cube").addEventListener("click", startplay2cube);
+                document.getElementById("id_3_cube").addEventListener("click", startplay3cube);
+                document.getElementById("id_special_cube").addEventListener("click", startplayspecialcube);
+                document.getElementById("id_powerleft").addEventListener("click", powerleft);
+                document.getElementById("id_powerright").addEventListener("click", powerright);
+                document.getElementById("id_startsphere").addEventListener("click", startsphere);
+                document.getElementById("frustum").addEventListener("click", frustumonclick);
+                document.getElementById("id_countdown").addEventListener("click", countdown);
+
+            </script>
+            <p>
+                <ul>
+                    <li>Press Init Game</li>
+                    <li>Select one of the following game mode : 1, 2 ,3 or Special</li>
+                    <li>Aim with arrow (left or right)</li>
+                    <li>Press press Start to launch ball</li>
+                    <li>Goal of the game is to hit the cube/s before time running out</li>
+                </ul>
+            </p>
+        </div>
+    </body>
+
+    <script>
+        const settings = {
+            zNear: 1,
+            zFar: 100,
+            D: 10,
+            target: [0, 0, 0],
+            up: [0, 1, 0],
+            dMax: 0.5,  // maximum movement transition
+            dMin: -0.5, // minimum movement transition
+            dx: 0.012, // movement speed - delta
+            eMax: 0.7,  // maximum explotion transition
+            eMin: 0.0, // minimum explotion transition
+            de: 0.01, // explotion speed - delta
+            posX: 5.5,
+            posY: 8,
+            posZ: 5,
+            targetX: 0,
+            targetY: -1,
+            targetZ: 0,
+            projWidth: 5,
+            projHeight: 5,
+            perspective: true,
+            fieldOfView: 80,
+            bias: -0.006,
+            show_fps: false,
+            countdown: 60,
+            shadowintensity:0,
+        };
+    </script>
+    <!-- vertex shader -->
+    <script id="vertex-shader" type="not-javascript">
+        attribute vec4 a_position;
+        attribute vec2 a_texcoord;
+        attribute vec3 a_normal;
+
+        uniform mat4 u_projection;
+        uniform mat4 u_view;
+        uniform mat4 u_world;
+        uniform mat4 u_textureMatrix; // Frustum di illuminazione
+
+        varying vec2 v_texcoord;
+        varying vec4 v_projectedTexcoord;
+        varying vec3 v_normal;
+
+        void main() {
+            vec4 worldPosition = u_world * a_position;
+
+            gl_Position = u_projection * u_view * worldPosition;
+
+            
+            v_texcoord = a_texcoord;
+
+            v_projectedTexcoord = u_textureMatrix * worldPosition;
+
+            v_normal = mat3(u_world) * a_normal;
+        }
+    </script>
+    <!-- fragment shader -->
+    <script id="fragment-shader" type="not-javascript">
+        precision mediump float;
+
+        varying vec2 v_texcoord;
+        varying vec4 v_projectedTexcoord; // Punto all'interno del frustum di illuminazione
+        varying vec3 v_normal;
+
+        uniform vec4 u_colorMult;
+        uniform sampler2D u_texture;        
+        uniform sampler2D u_projectedTexture; // Shadow map
+        uniform float u_bias;
+        uniform vec3 u_reverseLightDirection;     
+        uniform float u_shadowintensity;  
+
+        void main() 
+        {
+            vec3 normal = normalize(v_normal);
+
+            float light = dot(normal, u_reverseLightDirection);
+
+
+            // Vettore vec3 (non omogeneo) di un punto nel frustum di illuminazione
+            vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w; 
+
+            // Profondita di un punto illuminato rispetto al punto luce 
+            float currentDepth = projectedTexcoord.z + u_bias;
+
+
+            // E' nel frustum di illuminazione
+            bool inRange =
+                projectedTexcoord.x >= 0.0 &&
+                projectedTexcoord.x <= 1.0 &&
+                projectedTexcoord.y >= 0.0 &&
+                projectedTexcoord.y <= 1.0;
+
+            // the 'r' channel has the depth values
+            // https://webglfundamentals.org/webgl/lessons/webgl-shadows.html
+            vec4 projectedDepthColor = texture2D(u_projectedTexture, projectedTexcoord.xy);
+            float projectedDepth = projectedDepthColor.r;
+
+            bool isInShadow = projectedDepth <= currentDepth;
+
+            bool isInsideLightFrustumAndInShadow = inRange && isInShadow;
+
+            float shadowLight = isInsideLightFrustumAndInShadow ? u_shadowintensity : 1.0;
+
+            vec4 texColor = texture2D(u_texture, v_texcoord) * u_colorMult;
+
+
+            gl_FragColor = vec4(
+                texColor.rgb * light * shadowLight,
+                texColor.a);
+            
+
+            
+
+        }
+
+    
+
+    </script>
+    <!-- vertex shader -->
+    <script  id="color-vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 a_position;
+        
+        uniform mat4 u_projection;
+        uniform mat4 u_view;
+        uniform mat4 u_world;
+        
+        void main() {
+        // Multiply the position by the matrices.
+        gl_Position = u_projection * u_view * u_world * a_position;
+        }
+    </script>
+    <!-- fragment shader -->
+    <script  id="color-fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        
+        uniform vec4 u_color;
+        void main() {
+        gl_FragColor = u_color;
+        }
+    </script>
+</html>
+
+<script src="geometries.js"></script>
+<script src="event_handlers.js"></script>
+<script src="index.js"></script>
