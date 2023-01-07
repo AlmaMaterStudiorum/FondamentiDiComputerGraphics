@@ -3,7 +3,7 @@
 function HitTheCubeGame() {
 
     // Retrieve HTML elements for the interaction
-    const canvas = document.getElementById('shoes-canvas');
+    const canvas = document.getElementById('cube-canvas');
     canvas.width = screen.width * 0.8;
     canvas.height = screen.height * 0.7;
     const gl = canvas.getContext("webgl");
@@ -28,7 +28,7 @@ function HitTheCubeGame() {
     // Define a simple GUI using resources/dat.gui.js with toggler to change environment settings
     define_gui();
     // Used to apply transformation to scene objects -> outside loop prevent memory usage
-    var mo_matrix = m4.identity(), mo_matrix1;
+    var mo_matrix = m4.identity();
 
     
 
@@ -99,7 +99,7 @@ function HitTheCubeGame() {
                 array[index*4 + 0]= 255;
                 array[index*4 + 1]= 0;
                 array[index*4 + 2]= 0;   
-                array[index*4 + 2]= 255;              
+                //array[index*4 + 2]= 255;              
             }
         }
 

@@ -19,8 +19,7 @@
         <script type="text/javascript" src="global.js" ></script>
         <script type="text/javascript" src="gui.event.js" ></script>
         <script type="text/javascript" src="gameconfiguration.js" ></script>
-        <script type="text/javascript" src="resources/sphere.utils.js"></script> <!--easy API to create a control panel for the application-->
-        <script type="text/javascript" src="event_handlers.js"></script> <!--easy API to create a control panel for the application-->
+        <script type="text/javascript" src="resources/sphere.utils.js"></script> <!--functions for sphere-->
        
         <script src="utils.js" ></script>
     </head>
@@ -31,7 +30,7 @@
         <div class="container" id="canvas-container">
             <table style="width:  100%;" cellpadding="5%">
                 <tr>
-                    <td><canvas id="shoes-canvas">Your browser does not support HTML 5!</canvas></td>
+                    <td><canvas id="cube-canvas">Your browser does not support HTML 5!</canvas></td>
                     
             </table>
         </div>
@@ -86,7 +85,7 @@
             <p>
                 <ul>
                     <li>Press Init Game</li>
-                    <li>Select one of the following game mode : 1, 2 ,3 or Special</li>
+                    <li>Select one of the following game mode : 1, 2 , 3 or Special</li>
                     <li>Aim with arrow (left or right)</li>
                     <li>Press press Start to launch ball</li>
                     <li>Goal of the game is to hit the cube/s before time running out</li>
@@ -206,13 +205,7 @@
                 texColor.rgb * light * shadowLight,
                 texColor.a);
             
-
-            
-
         }
-
-    
-
     </script>
     <!-- vertex shader -->
     <script  id="color-vertex-shader" type="x-shader/x-vertex">

@@ -230,56 +230,5 @@ function setTextures(gl) {
     textures[T_ARROW] = textureFromImage(gl, PATH_WOOD);
     textures[T_SPECIALCUBE] = textureFromImage(gl, PATH_SPECIAL_CUBE);
 }
-// Fill the buffer with texture coordinates the cube.
-function setTexcoordsSpecialCube(gl) {
-    gl.bufferData(
-        gl.ARRAY_BUFFER,
-        new Float32Array(
-          [
-          // select the top left image
-          0   , 0  ,
-          0   , 0.5,
-          0.25, 0  ,
-          0   , 0.5,
-          0.25, 0.5,
-          0.25, 0  ,
-          // select the top middle image
-          0.25, 0  ,
-          0.5 , 0  ,
-          0.25, 0.5,
-          0.25, 0.5,
-          0.5 , 0  ,
-          0.5 , 0.5,
-          // select to top right image
-          0.5 , 0  ,
-          0.5 , 0.5,
-          0.75, 0  ,
-          0.5 , 0.5,
-          0.75, 0.5,
-          0.75, 0  ,
-          // select the bottom left image
-          0   , 0.5,
-          0.25, 0.5,
-          0   , 1  ,
-          0   , 1  ,
-          0.25, 0.5,
-          0.25, 1  ,
-          // select the bottom middle image
-          0.25, 0.5,
-          0.25, 1  ,
-          0.5 , 0.5,
-          0.25, 1  ,
-          0.5 , 1  ,
-          0.5 , 0.5,
-          // select the bottom right image
-          0.5 , 0.5,
-          0.75, 0.5,
-          0.5 , 1  ,
-          0.5 , 1  ,
-          0.75, 0.5,
-          0.75, 1  ,
-  
-        ]),
-        gl.STATIC_DRAW);
-  }
+
 
