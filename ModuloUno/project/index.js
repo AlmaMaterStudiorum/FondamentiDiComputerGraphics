@@ -339,6 +339,7 @@ function HitTheCubeGame() {
 
             if(distance <= 3)
             {               
+                //gl.disable(gl.DEPTH_TEST);
                 checkerboardTexture = CreateCheckBoardProceduralTexture(totalDeltaPosition);        
                 color = ColorWHITE;       
             }
