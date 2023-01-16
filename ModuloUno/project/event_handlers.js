@@ -31,7 +31,8 @@ function define_gui() {
     gui.add(settings,"projWidth").min(0).max(5).step(0.5);
     gui.add(settings,"projHeight").min(0).max(5).step(0.5);
     //gui.add(settings,"bias").min(-0.010).max(0.010).step(0.001);
-    gui.add(settings,"fieldOfView").min(60).max(120).step(5);
+    gui.add(settings,"fieldOfViewLight").min(60).max(120).step(5);
+    gui.add(settings,"fieldOfViewObserver").min(60).max(120).step(5);
     //gui.add(settings,"dx").min(0.001).max(0.030).step(0.001);
     //gui.add(settings,"de").min(0.01).max(0.05).step(0.001);
     gui.add(settings,"countdown").min(5).max(120).step(1);

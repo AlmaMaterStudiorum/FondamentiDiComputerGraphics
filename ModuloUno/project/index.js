@@ -30,10 +30,6 @@ function HitTheCubeGame() {
     // Used to apply transformation to scene objects -> outside loop prevent memory usage
     var mo_matrix = m4.identity();
 
-    
-
-
-
     var sphereInit = true;
     //var sphereMatrix;
     
@@ -408,10 +404,10 @@ function HitTheCubeGame() {
     function drawPlane(programInfo) {
         webglUtils.setBuffersAndAttributes(gl, programInfo, bufferInfo_plane);
         webglUtils.setUniforms(programInfo, {
-            u_colorMult: [0.9, 0.8, 1, 1],
+            u_colorMult: [1, 1, 1, 1],
             u_color: [1, 0, 0, 1],
             u_texture: textures[T_PLANE],
-            u_world: m4.translation(0, -1.5, 0),
+            u_world: m4.translation(0, -1.0, 0),
             
         });
         webglUtils.drawBufferInfo(gl, bufferInfo_plane);
@@ -670,10 +666,56 @@ function HitTheCubeGame() {
        
     }
 
+    function drawShadow(lightProjectionMatrix, lightWorldMatrix, programInfo) {
+        // Make a view matrix from the camera matrix.
+       const viewMatrix = m4.inverse(lightWorldMatrix);
+
+       gl.useProgram(programInfo.program);
+           
+       webglUtils.setUniforms(programInfo, {
+           u_view: viewMatrix,
+           u_projection: lightProjectionMatrix,
+           u_bias: settings.bias,
+           u_textureMatrix: m4.identity(),
+           //u_projectedTexture:depth.depthTexture,
+           u_shadowintensity : settings.shadowintensity / 100,
+           u_projectedTexture:depth.texture,
+           u_reverseLightDirection: lightWorldMatrix.slice(8, 11), // vettore normalizzato della luce (dal vertice alla sorgente)
+       });
+
+       drawPlane(programInfo);
+       if(true)
+        {
+            for(let i = 0; i < cubePositions.length ; i++)
+            {
+        
+                var cp = cubePositions[i];
+                var cc = cubeColors[i];
+                if(i != SPECIALCUBEINDEX)
+                {
+                    drawCubes(programInfo,i);
+                }
+                else
+                {
+                    var rad = degToRad(totalDeltaPosition);
+                    cp = [cp[Xdim] + 2*Math.cos(10*rad),cp[Ydim],cp[Zdim] + 2*Math.sin(10*rad)]
+                    drawSpecialCube(programInfo,cp,cc)
+                }
+                
+            }
+                       
+            drawSphere(programInfo,sphereBufferInfo);
+            //drawArrow(programInfo);
+        }
+             
+   }
+
     // Draw the scene.
     function render() {
         //gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc( gl.LESS );
+        gl.enable(gl.BLEND)
 
         // first draw from the POV of the light
         const lightWorldMatrix = m4.lookAt(
@@ -683,25 +725,38 @@ function HitTheCubeGame() {
         );
         
         const lightProjectionMatrix = m4.perspective(
-                degToRad(settings.fieldOfView),
+                degToRad(settings.fieldOfViewLight),
                 settings.projWidth / settings.projHeight,
                 settings.zNear,  // near
                 settings.zFar)   // far
+
+        const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+        const projectionMatrix = m4.perspective(degToRad(settings.fieldOfViewObserver), aspect, settings.zNear, settings.zFar);
+
+        var camera = [settings.D*Math.sin(PHI)*Math.cos(THETA), settings.D*Math.sin(PHI)*Math.sin(THETA), settings.D*Math.cos(PHI)];
+        const cameraMatrix = m4.lookAt(camera, settings.target, settings.up);
            
         // draw to the depth texture
-        gl.bindFramebuffer(gl.FRAMEBUFFER, depth.framebuffer);
-        gl.viewport(0, 0, depthTextureSize, depthTextureSize);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // Crea l'ombra
+        if(true)
+        {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, depth.framebuffer);
+            gl.viewport(0, 0, depthTextureSize, depthTextureSize);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        }
 
         if(true) {
             //console.log("toggle_shadow_on_off : " + toggle_shadow_on_off)
-            drawScene(lightProjectionMatrix, lightWorldMatrix, m4.identity(), lightWorldMatrix, colorProgramInfo);
+            drawShadow(lightProjectionMatrix,   lightWorldMatrix, colorProgramInfo);
         }
+
         // now draw scene to the canvas projecting the depth texture into the scene
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
         gl.clearColor( 61/255, 119/255, 255/255, 1.0); // same color of the html body
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
 
         let textureMatrix = m4.identity();
         var translate = 0.5;
@@ -713,11 +768,6 @@ function HitTheCubeGame() {
         // lightWorldMatrix : vettore del punto luce
         textureMatrix = m4.multiply(textureMatrix, m4.inverse(lightWorldMatrix));
 
-        const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-        const projectionMatrix = m4.perspective(degToRad(settings.fieldOfView), aspect, settings.zNear, settings.zFar);
-
-        var camera = [settings.D*Math.sin(PHI)*Math.cos(THETA), settings.D*Math.sin(PHI)*Math.sin(THETA), settings.D*Math.cos(PHI)];
-        const cameraMatrix = m4.lookAt(camera, settings.target, settings.up);
 
         drawScene(projectionMatrix, cameraMatrix, textureMatrix, lightWorldMatrix, textureProgramInfo);
         if(toggle_frustum_on_off) {

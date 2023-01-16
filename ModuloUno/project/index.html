@@ -116,7 +116,8 @@
             projWidth: 5,
             projHeight: 5,
             perspective: true,
-            fieldOfView: 80,
+            fieldOfViewLight: 120,
+            fieldOfViewObserver: 80,
             bias: -0.006,
             show_fps: false,
             countdown: 60,
@@ -132,7 +133,7 @@
         uniform mat4 u_projection;
         uniform mat4 u_view;
         uniform mat4 u_world;
-        uniform mat4 u_textureMatrix; // Frustum di illuminazione
+        uniform mat4 u_textureMatrix; // Frustum di illuminazione (matrice di trasformazione del fustrum di illuminazione)
 
         varying vec2 v_texcoord;
         varying vec4 v_projectedTexcoord;
@@ -142,10 +143,10 @@
             vec4 worldPosition = u_world * a_position;
 
             gl_Position = u_projection * u_view * worldPosition;
-
             
             v_texcoord = a_texcoord;
 
+            // Punto all'interno del frustum di illuminazione  della superficie di un oggetto
             v_projectedTexcoord = u_textureMatrix * worldPosition;
 
             v_normal = mat3(u_world) * a_normal;
@@ -156,7 +157,7 @@
         precision mediump float;
 
         varying vec2 v_texcoord;
-        varying vec4 v_projectedTexcoord; // Punto all'interno del frustum di illuminazione
+        varying vec4 v_projectedTexcoord; // Punto all'interno del frustum di illuminazione della superficie di un oggetto
         varying vec3 v_normal;
 
         uniform vec4 u_colorMult;
@@ -170,13 +171,14 @@
         {
             vec3 normal = normalize(v_normal);
 
-            float light = dot(normal, u_reverseLightDirection);
+            float light = dot(normal, normalize(u_reverseLightDirection));
 
 
-            // Vettore vec3 (non omogeneo) di un punto nel frustum di illuminazione
+            // Vettore vec3 (non omogeneo) di un punto nel frustum di illuminazione della superficie di un oggetto
             vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w; 
 
             // Profondita di un punto illuminato rispetto al punto luce 
+            // Distanza dal punto target di illuminazione ed il punto correntamente calcolato
             float currentDepth = projectedTexcoord.z + u_bias;
 
 
@@ -189,20 +191,34 @@
 
             // the 'r' channel has the depth values
             // https://webglfundamentals.org/webgl/lessons/webgl-shadows.html
+            // Curva dei punti che sono illuminati proiettati sulla shadow map
+            // Insieme dei punti degli oggetti che sono all'interno del frustum di illuminazione proiettati sulla shadow map che è sul plane
             vec4 projectedDepthColor = texture2D(u_projectedTexture, projectedTexcoord.xy);
+
+
+            // Distanza salvata nel depth buffer
             float projectedDepth = projectedDepthColor.r;
 
-            bool isInShadow = projectedDepth <= currentDepth;
+            // Se un punto correntemente calcolato  è più distante rispetto a quello del depth buffer
+            bool isInShadow = projectedDepth < currentDepth;
 
+            // Il punto è contemporaneamente all'interno del frustum di illuminazione e contemporaneamente più distante 
+            // rispetto al valore del punto nel depth buffer corrente
             bool isInsideLightFrustumAndInShadow = inRange && isInShadow;
 
+            // Se il punto corrente è esterno al frustum di illuminazione allora shadowLight = 1.0;
+            // Se il punto corrente è interno al frustum di illuminazione allora :
+            //          Se il punto corrente è più distande dal punto luce rispetto al punto nel depth buffer allora shadowLight = u_shadowintensity
+            //              altrimenti shadowLight = 1.0
+            //
             float shadowLight = isInsideLightFrustumAndInShadow ? u_shadowintensity : 1.0;
 
             vec4 texColor = texture2D(u_texture, v_texcoord) * u_colorMult;
 
+            float correctLight = (light + 1.0)/2.0;
 
             gl_FragColor = vec4(
-                texColor.rgb * light * shadowLight,
+                texColor.rgb * correctLight * shadowLight,
                 texColor.a);
             
         }
@@ -215,9 +231,10 @@
         uniform mat4 u_view;
         uniform mat4 u_world;
         
-        void main() {
-        // Multiply the position by the matrices.
-        gl_Position = u_projection * u_view * u_world * a_position;
+        void main() 
+        {
+            // Multiply the position by the matrices.
+            gl_Position = u_projection * u_view * u_world * a_position;
         }
     </script>
     <!-- fragment shader -->
@@ -225,8 +242,9 @@
         precision mediump float;
         
         uniform vec4 u_color;
-        void main() {
-        gl_FragColor = u_color;
+        void main() 
+        {
+            gl_FragColor = u_color;
         }
     </script>
 </html>

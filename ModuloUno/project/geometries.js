@@ -18,7 +18,7 @@ function setGeometries(gl) {
     // PLANE
     {
 		const S = 15; 		
-		const H = 0.15; 
+		const H = 0.0; 
 
 		const arrays_floor = {
 		   position: 	{ numComponents: 3, data: [-S,H,-S, S,H,-S, -S,H,S,  S,H,S,], },
