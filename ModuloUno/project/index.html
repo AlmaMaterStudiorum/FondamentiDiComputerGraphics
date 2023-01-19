@@ -178,7 +178,7 @@
             vec3 projectedTexcoord = v_projectedTexcoord.xyz / v_projectedTexcoord.w; 
 
             // Profondita di un punto illuminato rispetto al punto luce 
-            // Distanza dal punto target di illuminazione ed il punto correntamente calcolato
+            // Distanza dal punto target di illuminazione ed il punto corrente
             float currentDepth = projectedTexcoord.z + u_bias;
 
 
@@ -191,15 +191,18 @@
 
             // the 'r' channel has the depth values
             // https://webglfundamentals.org/webgl/lessons/webgl-shadows.html
-            // Curva dei punti che sono illuminati proiettati sulla shadow map
-            // Insieme dei punti degli oggetti che sono all'interno del frustum di illuminazione proiettati sulla shadow map che è sul plane
+            // "When we reference the depth texture in a shader only the red value is valid ..."
+            // u_projectedTexture è la texture proiettata sul "fondo" che contiene la shadow map memorizzata nella texture del framebuffer
+            // che è stata inizializzata al giro prededente quando è stata chiamata drawShadow (vedi index.js)
+            // 
             vec4 projectedDepthColor = texture2D(u_projectedTexture, projectedTexcoord.xy);
 
 
-            // Distanza salvata nel depth buffer
+            // Distanza salvata nel frame buffer/depth buffer
+            // Al giro precedente (drawShadow) è stato settato il framebuffer\depthbuffer dove in r c'è la profondità
             float projectedDepth = projectedDepthColor.r;
 
-            // Se un punto correntemente calcolato  è più distante rispetto a quello del depth buffer
+            // Se un punto corrente  è più distante rispetto a quello del depth buffer
             bool isInShadow = projectedDepth < currentDepth;
 
             // Il punto è contemporaneamente all'interno del frustum di illuminazione e contemporaneamente più distante 
