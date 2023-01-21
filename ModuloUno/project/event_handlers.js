@@ -38,6 +38,8 @@ function define_gui() {
     gui.add(settings,"countdown").min(5).max(120).step(1);
     gui.add(settings, "show_fps");
     gui.add(settings, "shadowintensity").min(0).max(100).step(1);
+    gui.add(settings, "shadowingcoefficentfrustum").min(0).max(100).step(1);
+    gui.add(settings, "shadowingcoefficentnofrustum").min(0).max(100).step(1);
     gui.close();
 }
 

@@ -457,7 +457,7 @@ function HitTheCubeGame() {
 
     const sphereBufferInfo = webglUtils.createBufferInfoFromArrays(gl, createSphereVertices());
     const cubeBufferInfo = webglUtils.createBufferInfoFromArrays(gl, createCubeVertices());
-    //const arrowBufferInfo = webglUtils.createBufferInfoFromArrays(gl, geometries[G_ARROW]);
+    const arrowBufferInfo = webglUtils.createBufferInfoFromArrays(gl, geometries[G_ARROW]);
 
     const bufferInfo_plane = webglUtils.createBufferInfoFromArrays(gl, geometries[PLANE]);
 
@@ -564,8 +564,8 @@ function HitTheCubeGame() {
         //dY = -(e.pageY - old_y) * 2 * Math.PI / canvas.height; 
         dX = (e.pageX - old_x)*2 / canvas.width; 
         dY = (e.pageY - old_y)*2 / canvas.height; 
-        THETA += dX;
-        PHI += dY;
+        THETA += dY;
+        PHI += dX;
         old_x = e.pageX;
         old_y = e.pageY; 
         e.preventDefault();
@@ -613,6 +613,8 @@ function HitTheCubeGame() {
             u_textureMatrix: textureMatrix,
             //u_projectedTexture:depth.depthTexture,
             u_shadowintensity : settings.shadowintensity / 100,
+            u_shadowingcoefficentfrustum : settings.shadowingcoefficentfrustum / 100,
+            u_shadowingcoefficentnofrustum : settings.shadowingcoefficentnofrustum / 100,
             //u_projectedTexture:depth.texture,
             u_projectedTexture:projectedTexture,
             u_reverseLightDirection: lightWorldMatrix.slice(8, 11),
@@ -661,7 +663,7 @@ function HitTheCubeGame() {
         
         
         drawSphere(programInfo,sphereBufferInfo);
-        //drawArrow(programInfo);
+        drawArrow(programInfo);
 
         if(GameState == 2 || GameState == 3)
         {
@@ -679,7 +681,7 @@ function HitTheCubeGame() {
        webglUtils.setUniforms(programInfo, {
            u_view: viewMatrix,
            u_projection: lightProjectionMatrix,
-           //u_bias: settings.bias,
+           u_bias: settings.bias,
            //u_textureMatrix: m4.identity(),
            //u_projectedTexture:depth.depthTexture,
            //u_shadowintensity : settings.shadowintensity / 100,
@@ -709,7 +711,7 @@ function HitTheCubeGame() {
             }
                        
             drawSphere(programInfo,sphereBufferInfo);
-            //drawArrow(programInfo);
+            drawArrow(programInfo);
         }
              
    }
