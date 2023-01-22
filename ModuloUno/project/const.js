@@ -26,9 +26,8 @@ const PATH_SPECIAL_CUBE = TEXTURE_DIR + 'special_cube.jpg';
 // ARRAY INDICES FOR TEXTURES
 
 const T_PLANE = 0;
-const T_ME = 1;
-const T_ARROW = 2;
-const T_SPECIALCUBE = 3;
+const T_ARROW = 1;
+const T_SPECIALCUBE = 2;
 
 const SPECIALCUBEINDEX = 3;
 

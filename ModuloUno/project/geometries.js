@@ -217,7 +217,6 @@ function setGeometries(gl) {
 
 function setTextures(gl) {
     textures[T_PLANE] = textureFromImage(gl, PATH_WOOD_PLANE);
-    textures[T_ME] = textureFromImage(gl, PATH_ME);
     textures[T_ARROW] = textureFromImage(gl, PATH_WOOD);
     textures[T_SPECIALCUBE] = textureFromImage(gl, PATH_SPECIAL_CUBE);
 }
