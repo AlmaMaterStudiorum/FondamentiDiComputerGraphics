@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Relazione - Hit The Cube</title>
+<meta name="description" content="">
+<style type="text/css">/* Caratteristiche generali del corpo della pagina */
+body {
+ margin: 0;
+ padding: 0;
+ background-color: #FFF;
+ font-family: arial, verdana, sans-serif;
+ color: #000;
+}
+/* caratteristiche del contenitore del codice HTML */
+.container {
+ width: 80%;
+ margin: 0 auto;
+}</style>
+</head>
+<body>
+<div class="container">
+<h1 style="text-align: center;">Hit The Cube</h1>
+<p>&nbsp;</p>
+<p>Hit The Cube &egrave; un gioco 3D realizzato in WebGL+Javascript.&nbsp;</p>
+<p>Lo scopo del gioco &egrave; colpire tutti i cubi con una sfera che rotola prima che il tempo finisca.</p>
+<p>Il gioco &egrave; composto dai seguenti elementi grafici :&nbsp;</p>
+<ul>
+<li>Una freccia realizzata con Blender composta da un cilindro e un cono , una texture e caricata nel gioco con un file obj e l'immagine della texture</li>
+<li>Una sfera con una texture a scacchiera creata a runtime</li>
+<li>Dei cubi "normali" con una texture a scacchiera creata a runtime</li>
+<li>Un cubo "speciale" con una texture di un'immagine dell'autore</li>
+<li>Un piano con una texture di un'immagine&nbsp;</li>
+</ul>
+<p>&nbsp;</p>
+<p>La sequenza di gioco &egrave; la seguente :</p>
+<ul>
+<li>Premere in bottone Init Game per inizializzare la partita</li>
+<li>Selezionare la modalit&agrave; di gioco ; <strong>1</strong> per un solo cubo statico , <strong>2</strong> per 2 cubi statici , <strong>3</strong> per 3 cubi statici e <strong>Special </strong>per 3 cubi statici e un cubo in movimento</li>
+<li>Usare le freccie per dare una direzione iniziale alla sfera , Left gira in senso orario e Right antiorario</li>
+<li>Start per far partire la sfera</li>
+</ul>
+<p>Se la sfera urta tutti i cubi i giocatore vince altrimente ha perso.</p>
+<p>La sfera &egrave; di colore bianco nella fase di init , gialla quando &egrave; in movimento , verde quando il giocatore ha vinto e rossa quando ha perso.</p>
+<p>La sfera rimbalza sul bordo del piano o sui cubi con un angolo che &egrave; la riflessione dell'angolo incidente.</p>
+<p>Quando la sfera &egrave; in prossimit&agrave; di un cubo il cubo viene applicata una texture procedurare che disegna un punto rosso che ruota intorno al centro della faccia.</p>
+<p>Quando la sfera urta un cubo il cubo diventa verde.</p>
+<p>Ogni volta che si sceglie una modalit&agrave; di gioco i cubi sono distribuiti in modo casuale sul piano , &egrave; possibile selezionare una modalit&agrave; pi&ugrave; volte.</p>
+<p>&nbsp;</p>
+<h2>Particolarit&agrave;</h2>
+<p>Il rotolamento senza strisciamento della sfera &egrave; realizzato attraverso una trasformazione degli assi a partire dalla direzione del movimento della sfera.</p>
+<p>Le texture iniziali dei cubi e delle sfere sono presi da un esempio del corso.</p>
+<p>Il calcolo del vettore di movimento della sfera dopo un urto &egrave; lo stesso per calcolare la luce riflessa.</p>
+<p>La texture procedurale dei cubi non simulano dei materiali ma solo un oggetto geometrico.</p>
+<p>La collision detection nel caso di urto di una superfice z costanti (direzione iniziale della freccia &egrave; x) &egrave; diversa dal caso di x costanti (parallela alla freccia) per testare differenti comportamenti , la collision detection a volte sembra ignorare l'urto.</p>
+<p>Nel fragment shader sono distinti i casi ( 8 casi totali) di un vertice la cui normale &egrave; nella direzione della luce (light &gt;= 0) , se &egrave; nel frustum di illuminazione e se &egrave; in ombra (currentdepth &gt; projecteddepth della shadowmap) , abilitando parti del codice &egrave; possibile mostrare graficamente alcuni casi.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</body>
+</html>
