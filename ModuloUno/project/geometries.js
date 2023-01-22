@@ -216,15 +216,6 @@ function setGeometries(gl) {
 }
 
 function setTextures(gl) {
-    /*
-    textures[0] = textureFromImage(gl, PATH_BLACK_LEATHER);
-    textures[1] = textureFromImage(gl, PATH_BLUE_LEATHER);
-    textures[2] = textureFromImage(gl, PATH_ORANGE_LEATHER);
-    textures[3] = textureFromImage(gl, PATH_RED_LEATHER);
-    textures[4] = textureFromImage(gl, PATH_WHITE_LEATHER);
-    textures[5] = textureFromImage(gl, PATH_SOLE_RUBBER);
-    textures[6] = textureFromImage(gl, PATH_LACES_MESH);
-    */
     textures[T_PLANE] = textureFromImage(gl, PATH_WOOD_PLANE);
     textures[T_ME] = textureFromImage(gl, PATH_ME);
     textures[T_ARROW] = textureFromImage(gl, PATH_WOOD);

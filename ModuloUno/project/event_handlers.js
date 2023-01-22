@@ -5,7 +5,38 @@ window.addEventListener("keydown", function (event) {
         return; // Do nothing if the event was already processed
     }
     switch (event.key) {
-
+        case "1": // mode 1
+            console.log('1');
+            startplay1cube();
+        break;
+        case "2": // mode 2
+            console.log('2');
+            startplay2cube();
+        break;
+        case "3": // mode 3
+            console.log('3');
+            startplay3cube();
+        break;
+        case "4": // mode special
+            console.log('4');
+            startplayspecialcube();
+        break;
+        case "i": // left
+            console.log('i');
+            initgame();
+        break;
+        case "a": // left
+            console.log('a');
+            powerleft();
+        break;
+        case "s": // start
+            console.log('s');
+            startsphere();
+        break;
+        case "d": // right
+            console.log('d');
+            powerright();
+        break;
         case "f": // f -> frustum
             console.log('f');
             toggle_frustum_on_off = !toggle_frustum_on_off;
@@ -21,7 +52,7 @@ window.addEventListener("keydown", function (event) {
 function define_gui() {
     var gui = new dat.GUI();
     
-    gui.add(settings,"D").min(5).max(30).step(0.5);
+    gui.add(settings,"D").min(5).max(60).step(0.5);
     gui.add(settings,"posX").min(0).max(10).step(0.5);
     gui.add(settings,"posY").min(0).max(20).step(0.5);
     gui.add(settings,"posZ").min(0).max(10).step(0.5);
@@ -36,7 +67,7 @@ function define_gui() {
     //gui.add(settings,"dx").min(0.001).max(0.030).step(0.001);
     //gui.add(settings,"de").min(0.01).max(0.05).step(0.001);
     gui.add(settings,"countdown").min(5).max(120).step(1);
-    gui.add(settings, "show_fps");
+    //gui.add(settings, "show_fps");
     gui.add(settings, "shadowintensity").min(0).max(100).step(1);
     gui.add(settings, "shadowingcoefficentfrustum").min(0).max(100).step(1);
     gui.add(settings, "shadowingcoefficentnofrustum").min(0).max(100).step(1);
