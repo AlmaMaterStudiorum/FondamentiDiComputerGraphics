@@ -64,13 +64,19 @@ function define_gui() {
     //gui.add(settings,"bias").min(-0.010).max(0.010).step(0.001);
     gui.add(settings,"fieldOfViewLight").min(60).max(120).step(5);
     gui.add(settings,"fieldOfViewObserver").min(60).max(120).step(5);
-    //gui.add(settings,"dx").min(0.001).max(0.030).step(0.001);
-    //gui.add(settings,"de").min(0.01).max(0.05).step(0.001);
     gui.add(settings,"countdown").min(5).max(120).step(1);
-    //gui.add(settings, "show_fps");
     gui.add(settings, "shadowintensity").min(0).max(100).step(1);
     gui.add(settings, "shadowingcoefficentfrustum").min(0).max(100).step(1);
     gui.add(settings, "shadowingcoefficentnofrustum").min(0).max(100).step(1);
+    gui.add(settings, "C1LRS").min(0).max(1).step(1);
+    gui.add(settings, "C2LR").min(0).max(1).step(1);
+    gui.add(settings, "C3LS").min(0).max(1).step(1);
+    gui.add(settings, "C4L").min(0).max(1).step(1);
+    gui.add(settings, "C5RS").min(0).max(1).step(1);
+    gui.add(settings, "C6R").min(0).max(1).step(1);
+    gui.add(settings, "C7S").min(0).max(1).step(1);
+    gui.add(settings, "C8").min(0).max(1).step(1);
+
     gui.close();
 }
 

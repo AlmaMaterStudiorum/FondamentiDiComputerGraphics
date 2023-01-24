@@ -1,0 +1,2 @@
+1.1    2022/01/22    marchesini.zip        inviata 2022/01/22
+1.2    2022/01/24    marchesiniV1.2.zip    aggiunto il debug del z-buffer (8 casi) , trasparenza del cubo normale quando la sfera è in prossimità

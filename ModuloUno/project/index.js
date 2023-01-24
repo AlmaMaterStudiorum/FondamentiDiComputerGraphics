@@ -4,8 +4,10 @@ function HitTheCubeGame() {
 
     // Retrieve HTML elements for the interaction
     const canvas = document.getElementById('cube-canvas');
-    canvas.width = screen.width * 0.8;
-    canvas.height = screen.height * 0.7;
+    canvas.width = window.innerWidth* 0.8;
+    canvas.height = window.innerHeight* 0.7;
+    //canvas.width = screen.width * 0.8;
+    //canvas.height = screen.height * 0.7;
     const gl = canvas.getContext("webgl");
 
     // Checking if WebGL is supported
@@ -79,7 +81,7 @@ function HitTheCubeGame() {
             array.push(255);
             array.push(255);
             array.push(255);
-            array.push(255);
+            array.push(0);
         }
        
         var xc =Math.ceil(size/2 + radiousrevolution*Math.cos(thetarad));
@@ -95,7 +97,7 @@ function HitTheCubeGame() {
                 array[index*4 + 0]= 255;
                 array[index*4 + 1]= 0;
                 array[index*4 + 2]= 0;   
-                //array[index*4 + 2]= 255;              
+                array[index*4 + 3]= 255;              
             }
         }
 
@@ -467,7 +469,7 @@ function HitTheCubeGame() {
     //function ManageDepth()
     //{
 
-    const depthTextureSize = 512*2;
+    const depthTextureSize = 512;
     function CreateDepth()
     {
         const depthTexture = gl.createTexture();
@@ -587,6 +589,15 @@ function HitTheCubeGame() {
             //u_projectedTexture:depth.texture,
             u_projectedTexture:projectedTexture,
             u_reverseLightDirection: lightWorldMatrix.slice(8, 11),
+            u_C1LRS:settings.C1LRS,
+            u_C2LR:settings.C2LR,
+            u_C3LS:settings.C3LS,
+            u_C4L:settings.C4L,
+            u_C5RS:settings.C5RS,
+            u_C6R:settings.C6R,
+            u_C7S:settings.C7S,
+            u_C8:settings.C8
+
         });
 
         
@@ -658,7 +669,7 @@ function HitTheCubeGame() {
            //u_reverseLightDirection: lightWorldMatrix.slice(8, 11), // vettore normalizzato della luce (dal vertice alla sorgente)
        });
 
-       //drawPlane(programInfo);
+       drawPlane(programInfo);
        if(true)
         {
             for(let i = 0; i < cubePositions.length ; i++)
@@ -690,7 +701,8 @@ function HitTheCubeGame() {
         //gl.enable(gl.CULL_FACE);
         gl.enable(gl.DEPTH_TEST);
         gl.depthFunc( gl.LESS );
-        gl.enable(gl.BLEND)
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
         // first draw from the POV of the light
         const lightWorldMatrix = m4.lookAt(

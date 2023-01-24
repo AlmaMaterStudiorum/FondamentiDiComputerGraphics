@@ -118,6 +118,15 @@
             shadowintensity:0,
             shadowingcoefficentfrustum:100,
             shadowingcoefficentnofrustum:100,
+            C1LRS:0,
+            C2LR:0,
+            C3LS:0,
+            C4L:0,
+            C5RS:0,
+            C6R:0,
+            C7S:0,
+            C8:0,
+
         };
     </script>
     <!-- vertex shader -->
@@ -164,6 +173,16 @@
         uniform float u_shadowintensity;  
         uniform float u_shadowingcoefficentfrustum; 
         uniform float u_shadowingcoefficentnofrustum; 
+
+        uniform float u_C1LRS;
+        uniform float u_C2LR;
+        uniform float u_C3LS;
+        uniform float u_C4L;
+        uniform float u_C5RS;
+        uniform float u_C6R;
+        uniform float u_C7S;
+        uniform float u_C8;
+
 
         void main() 
         {
@@ -222,7 +241,7 @@
             vec3 rgbColor ;
 
             // Prodotto scalare tra la normale al vertice e il reverse light (vettore dal vertice al punto luce)
-            if(light >= 0.0)
+            if(light > 0.0)
             {
                 // Punto "illuminato" direttamente dal punto luce
                 if(inRange)
@@ -231,13 +250,30 @@
                     {
                         // Plane o Object molto vicino ad un altro oggetto che gli fa ombra
                         // Ombra (shadow)
-                        rgbColor = texColor.rgb*light*shadowLight*proximityCoefficent;
+                        if(u_C1LRS == 0.0)
+                        {
+                            rgbColor = texColor.rgb*light*shadowLight;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(1.0, 0.0, 0.0);
+                            rgbColor = debugValue;
+                        }                       
                     }
                     else
                     {
                         // Plane o Object
                         // Piena illuminazione
-                        rgbColor = texColor.rgb*light;
+                        
+                        if(u_C2LR == 0.0)
+                        {
+                            rgbColor = rgbColor = texColor.rgb*light;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(0.0, 1.0, 0.0);
+                            rgbColor = debugValue;
+                        }
                     }
                 }
                 else
@@ -247,16 +283,29 @@
                         // Plane o Object molto vicino ad un altro oggetto che gli fa ombra
                         // non cè ombra
                         // 
-                        // vec3 error1 = vec3(1.0, 0.0, 0.0);
-                        // rgbColor = error1;
-                        rgbColor = texColor.rgb*light;
-
+                        if(u_C3LS == 0.0)
+                        {
+                            rgbColor = texColor.rgb*light;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(0.0, 0.0, 1.0);
+                            rgbColor = debugValue;
+                        }
                     }
                     else
                     {
                         // Plane o Object
                         // non cè ombra
-                        rgbColor = texColor.rgb*light;
+                        if(u_C4L == 0.0)
+                        {
+                            rgbColor = texColor.rgb*light;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(1.0, 1.0, 0.0);
+                            rgbColor = debugValue;
+                        }
                     }
                 }
             }
@@ -270,31 +319,58 @@
                     {
                         // Faccia non illuminata
                         // Ombreggiatura
-                        rgbColor = texColor.rgb*correctLight*u_shadowingcoefficentfrustum;
+                        
+                        if(u_C5RS == 0.0)
+                        {
+                            rgbColor = texColor.rgb*correctLight*u_shadowingcoefficentfrustum;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(1.0, 0.0, 1.0);
+                            rgbColor = debugValue;
+                        }
                     }
                     else
                     {
                         // Vertici non illuminati ma in ombra da altri vertici 
                         // Caso tipico : punti in alto dei cubi delle faccie non illuminati 
-                        //vec3 error2 = vec3(0.0, 1.0, 0.0);
-                        //rgbColor = error2;
-                        rgbColor = texColor.rgb*correctLight*u_shadowingcoefficentfrustum;
-                        
+                        if(u_C6R == 0.0)
+                        {
+                            rgbColor = texColor.rgb*correctLight*u_shadowingcoefficentfrustum;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(0.0, 1.0, 1.0);
+                            rgbColor = debugValue;
+                        }                      
                     }
                 }
                 else
                 {
                     if(isInShadow)
                     {
-                        //vec3 error3 = vec3(0.0, 0.0, 1.0);
-                        //rgbColor = error3;
-                        rgbColor = texColor.rgb*correctLight*shadowLight*u_shadowingcoefficentnofrustum;
-                        
+                        if(u_C7S == 0.0)
+                        {
+                            rgbColor = texColor.rgb*correctLight*shadowLight*u_shadowingcoefficentnofrustum;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(0.5, 0.5, 0.0);
+                            rgbColor = debugValue;
+                        }                     
                     }
                     else
                     {
                         // Faccia non illuminata non in frustum
-                        rgbColor = texColor.rgb*correctLight*shadowLight*u_shadowingcoefficentnofrustum;
+                        if(u_C8 == 0.0)
+                        {
+                            rgbColor = texColor.rgb*correctLight*shadowLight*u_shadowingcoefficentnofrustum;
+                        }
+                        else
+                        {
+                            vec3 debugValue = vec3(0.0, 0.5, 0.5);
+                            rgbColor = debugValue;
+                        }
                     }
                 }
             }
