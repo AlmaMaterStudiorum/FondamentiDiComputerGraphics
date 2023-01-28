@@ -4,8 +4,10 @@ function HitTheCubeGame() {
 
     // Retrieve HTML elements for the interaction
     const canvas = document.getElementById('cube-canvas');
+
     canvas.width = window.innerWidth* 0.8;
     canvas.height = window.innerHeight* 0.7;
+
     //canvas.width = screen.width * 0.8;
     //canvas.height = screen.height * 0.7;
     const gl = canvas.getContext("webgl");
@@ -469,7 +471,7 @@ function HitTheCubeGame() {
     //function ManageDepth()
     //{
 
-    const depthTextureSize = 512;
+    
     function CreateDepth()
     {
         const depthTexture = gl.createTexture();

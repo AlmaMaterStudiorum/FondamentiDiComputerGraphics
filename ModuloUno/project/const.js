@@ -45,3 +45,5 @@ const ColorGREEN  =  [0,1,0,1];
 const ColorWHITE  =  [1,1,1,1];
 const ColorYELLOW =  [1,1,0,1];
 const ColorRED    =  [1,0,0,1];
+
+const depthTextureSize = 512;
