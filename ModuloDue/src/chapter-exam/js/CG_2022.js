@@ -16,38 +16,39 @@ function init() {
   initPlane(scene);
 
   var mixer = new THREE.AnimationMixer();
-  var clipAction;
+  
   var frameMesh;
-  var mesh;
+  var meshHorse;
   var phi = 0.0;
 
 
-  var textGeometry;
+  //var textGeometry;
   var textMesh;
 
   initDefaultLighting(scene, new THREE.Vector3(-10, 30, 80));
 
   //scene.children[1].position.x = -20;
   var loader = new THREE.JSONLoader();
-  loader.load('../../assets/models/horse/horse.js', function (geometry, mat) {
+  loader.load('../../assets/models/horse/horse.json', function (geometry, mat) {
     geometry.computeVertexNormals();
     geometry.computeMorphNormals();
 
     var mat = new THREE.MeshLambertMaterial({ morphTargets: true, vertexColors: THREE.FaceColors });
-    mesh = new THREE.Mesh(geometry, mat);
-    mesh.scale.set(0.15, 0.15, 0.15);
-    mesh.translateY(-10);
-    mesh.translateX(10);
-    mesh.castShadow = true;
+    meshHorse = new THREE.Mesh(geometry, mat);
+    meshHorse.scale.set(0.15, 0.15, 0.15);
+    meshHorse.translateY(-10);
+    meshHorse.translateX(10);
+    meshHorse.castShadow = true;
 
-    mixer = new THREE.AnimationMixer(mesh);
+    mixer = new THREE.AnimationMixer(meshHorse);
     // or create a custom clip from the set of morphtargets
     // var clip = THREE.AnimationClip.CreateFromMorphTargetSequence( 'gallop', geometry.morphTargets, 30 );
-    animationClip = geometry.animations[0]
-    clipAction = mixer.clipAction(animationClip).play();
+    //animationClip = geometry.animations[0];
+    var clipAction;
+    clipAction = mixer.clipAction(geometry.animations[0]).play();
 
     clipAction.setLoop(THREE.LoopRepeat);
-    scene.add(mesh)
+    scene.add(meshHorse)
 
     // enable the controls
     //enableControls()
@@ -127,10 +128,11 @@ function init() {
   gui.add(controls, 'bevelSegments', 0, 30).step(1).onChange(controls.redraw);
   gui.add(controls, 'bevelEnabled').onChange(controls.redraw);
   gui.add(controls, 'curveSegments', 1, 30).step(1).onChange(controls.redraw);
-  gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.redraw);
+  //gui.add(controls, 'steps', 1, 5).step(1).onChange(controls.redraw);
   gui.add(controls, 'speed', 1, 100).step(1).onChange(controls.redraw);
 
   // add a material section, so we can switch between materials
+  /*
   gui.add(controls, 'appliedMaterial', {
     meshNormal: applyMeshNormalMaterial,
     meshStandard: applyMeshStandardMaterial
@@ -138,7 +140,7 @@ function init() {
 
   gui.add(controls, 'castShadow').onChange(function (e) { controls.mesh.castShadow = e })
   gui.add(controls, 'groundPlaneVisible').onChange(function (e) { groundPlane.material.visible = e })
-
+*/
   function CreateText() {
     var CurrentPhi = Math.floor(controls.speed * phi);
     if (lastPhi != CurrentPhi) {
@@ -157,19 +159,17 @@ function init() {
         steps: controls.steps
       };
       //console.log(CurrentPhi);
-      textGeometry = new THREE.TextGeometry(CurrentPhi.toString(), options)
+      var textGeometry = new THREE.TextGeometry(CurrentPhi.toString(), options)
       textGeometry.applyMatrix(new THREE.Matrix4().makeScale(0.05, 0.05, 0.05));
       textGeometry.center();
       var material = new THREE.MeshLambertMaterial({ color: 0xffffff });
-
+      textMesh = null;
       textMesh = new THREE.Mesh(textGeometry, material);
       scene.add(textMesh);
       lastPhi = CurrentPhi;
       //return textGeometry
     };
   }
-
-
 
   var cylinder = CreateCylinder()
 
@@ -197,11 +197,8 @@ function init() {
       phi = 0;
     }
     trackballControls.update(delta);
-    requestAnimationFrame(render);
-    renderer.render(scene, camera);
-    //textGeometry.text =  Math.floor( controls.speed*phi).toString();
+
     CreateText();
-    //sphereMesh.rotation.y += 0.01;
 
     var hX = 100 * Math.cos(degToRad(rotationAngle));
     var hZ = 50 * Math.sin(degToRad(rotationAngle));
@@ -236,15 +233,18 @@ function init() {
 
     }
 
-    mesh.rotation.y = -degToRad(controls.speed * phi);
-    mesh.position.x = hX;
-    mesh.position.y = hY;
-    mesh.position.z = hZ;
-    if (mixer && clipAction) {
+    meshHorse.rotation.y = -degToRad(controls.speed * phi);
+    meshHorse.position.x = hX;
+    meshHorse.position.y = hY;
+    meshHorse.position.z = hZ;
+    if (mixer /* && clipAction */) {
       mixer.update(delta);
-      controls.time = mixer.time;
-      controls.effectiveTimeScale = clipAction.getEffectiveTimeScale();
-      controls.effectiveWeight = clipAction.getEffectiveWeight();
+      //controls.time = mixer.time;
+      //controls.effectiveTimeScale = clipAction.getEffectiveTimeScale();
+      //controls.effectiveWeight = clipAction.getEffectiveWeight();
     }
+
+    requestAnimationFrame(render);
+    renderer.render(scene, camera);
   }
 }

@@ -15,8 +15,24 @@ function CreateCube()
 
 function CreateCylinder()
 {
-  var cylinderGeometry = new THREE.CylinderGeometry(5, 5, 20, 32 );
-  var cylinderMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+
+  var cylinderGeometry;
+  var cylinderMaterial;
+  if(false)
+  {
+    cylinderGeometry = new THREE.CylinderGeometry(5, 5, 20, 32 );
+    cylinderMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+  }
+  else
+  {
+    cylinderGeometry = new THREE.TorusKnotGeometry( 10, 3, 100, 16 );
+    cylinderMaterial = new THREE.MeshPhongMaterial({
+
+      emissive: new THREE.Color(0.2,0.2,0.2),
+      specular : new THREE.Color(1,0,0),
+  });
+  
+  }
   var cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
   cylinderMesh.castShadow = true;
 
